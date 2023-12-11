@@ -26,3 +26,13 @@ class AssignmentAdmin(admin.ModelAdmin):
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Teacher)
+class TeacherAdmin(admin.ModelAdmin):
+    pass
