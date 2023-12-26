@@ -14,7 +14,7 @@ class GroupLessonsListView(ListView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['lessons'] = Lesson.objects.filter(group__id=self.kwargs["pk"])
+        context['assignments'] = Assignment.objects.filter(lesson__group__id=self.kwargs["pk"])
         return context
 
 

@@ -1,5 +1,7 @@
+from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
 from .models import *
+from .resources import AssignmentResource
 
 
 # Register your models here.
@@ -25,10 +27,11 @@ class LessonAdmin(admin.ModelAdmin):
 
 
 @admin.register(Assignment)
-class AssignmentAdmin(admin.ModelAdmin):
+class AssignmentAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ("lesson", "due_date", "description", "title")
     list_display = ("lesson", "due_date", "description", "title")
     list_per_page = 10
+    resource_class = AssignmentResource
 
 
 @admin.register(Attendance)
@@ -44,5 +47,10 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 @admin.register(Teacher)
+class TeacherAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Mark)
 class TeacherAdmin(admin.ModelAdmin):
     pass
