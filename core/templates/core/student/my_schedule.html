@@ -7,7 +7,8 @@
     <thead>
     <tr>
         <th scope="col">Date</th>
-        <th scope="col">Time</th>
+        <th scope="col">From</th>
+        <th scope="col">To</th>
         <th scope="col">Subject</th>
         <th scope="col">Teacher</th>
     </tr>
@@ -15,8 +16,9 @@
     <tbody>
     {% for assignment in assignments %}
     <tr>
-        <th scope="row">{{ assignment.due_date|date:'d.m.Y' }}</th>
-        <td>{{ assignment.due_date|date:'H:i' }}</td>
+        <th scope="row">{{ assignment.from_date|date:'d.m.Y' }}</th>
+        <td>{{ assignment.from_date|date:'H:i' }}</td>
+        <td>{{ assignment.to_date|date:'H:i' }}</td>
         <td>{{ assignment.lesson.subject.name }}</td>
         <td>{{ assignment.lesson.teacher }}</td>
     </tr>
