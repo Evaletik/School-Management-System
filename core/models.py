@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Subject(models.Model):
@@ -19,8 +20,8 @@ class Group(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Subject"
-        verbose_name_plural = "Subjects"
+        verbose_name = "Group"
+        verbose_name_plural = "Groups"
 
 
 class Teacher(models.Model):
@@ -57,13 +58,24 @@ class Lesson(models.Model):
 
 class Assignment(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, null=True)
-    due_date = models.DateTimeField()
+    from_date = models.DateTimeField()
+    to_date = models.DateTimeField()
     description = models.CharField(max_length=20)
     title = models.CharField(max_length=20)
 
     class Meta:
         verbose_name = "Assignment"
         verbose_name_plural = "Assignments"
+
+    def clean(self):
+        time_difference_minutes = (self.to_date - self.from_date).total_seconds() / 60
+
+        if not (45 <= time_difference_minutes <= 210):
+            raise ValidationError({"to_date":"Time difference must be between 45 minutes and 3.5 hours"})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
 
 
 class Mark(models.Model):
