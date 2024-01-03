@@ -1,11 +1,11 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
-from django.views.generic import View, ListView, DetailView, TemplateView
+from django.views.generic import View, ListView, DetailView, TemplateView, UpdateView, FormView
+from django.http import JsonResponse
+
 from .models import *
-
-
-# from django.views.generic.edit import CreateView
+from .forms import *
 
 
 # Create your views here.
@@ -117,3 +117,26 @@ class GroupScheduleListView(ListView):
     def get_queryset(self):
         group = Group.objects.values('id').get(id=self.kwargs['pk'])
         return Assignment.objects.filter(lesson__group=group['id'])
+
+
+class FindTeacherView(ListView):
+    model = Assignment
+    template_name = "core/find_teacher_schedule.html"
+
+
+def get_teachers(request):
+    search = request.GET.get('q')
+    teachers = Teacher.objects.filter(firstName__startswith=search)
+    payload = []
+    for teacher in teachers:
+        payload.append({
+            "id": teacher.id,
+            "full_name": teacher.firstName + ' ' + teacher.lastName,
+        })
+    return JsonResponse({'payload': payload})
+
+
+class AssignmentUpdateView(UpdateView):
+    model = Assignment
+    form_class = AssignmentForm
+    template_name = "core/teacher/assignment_update_form.html"

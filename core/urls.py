@@ -15,4 +15,9 @@ urlpatterns = [
     path("my_schedule", MySchedule.as_view(), name='my_schedule'),
     path("teacher/<int:pk>/schedule", TeacherScheduleListView.as_view(), name='teacher_schedule'),
     path("group/<int:pk>/schedule", GroupScheduleListView.as_view(), name='group_schedule'),
+
+    path("find_teacher", FindTeacherView.as_view(), name='find_teacher'),
+    path("find_teacher/search", get_teachers, name='find_teacher_a'),
+
+    path("assignments/<int:pk>/edit", AssignmentUpdateView.as_view(), name='edit_assignment'),
 ]
