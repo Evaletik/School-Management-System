@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/forms.css' %}">
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/calendar.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/admin/DateTimeShortcuts.js' %}"></script>
+
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="colM">
+    <h1>Change Assignment</h1>
+    <h2>{{assignment}}</h2>
+    <div id="content-main">
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                {% include "form.html" with form=form %}
+                <div class="submit-row">
+                    <input type="submit" value="Update" class="default" name="_update">
+                    <a href="#" class="deletelink">Delete</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br class="clear">
+</div>
+{% endblock %}

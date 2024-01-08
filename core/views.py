@@ -3,13 +3,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Any
 from django.views.generic import View, ListView, DetailView, TemplateView, UpdateView, FormView
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 
 from .models import *
 from .forms import *
 
 
 # Create your views here.
-class HomeView(TemplateView):
+class IndexView(TemplateView):
     template_name = "index.html"
 
 
@@ -35,12 +36,12 @@ class GroupAttendancesListView(LoginRequiredMixin, ListView):
 
 class GroupListView(ListView):
     model = Group
-    template_name = "core/group_list.html"
+    template_name = "core/group/group_list.html"
 
 
 class GroupDetailView(DetailView):
     model = Group
-    template_name = "core/group_detail.html"
+    template_name = "core/group/group_detail.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -140,3 +141,9 @@ class AssignmentUpdateView(UpdateView):
     model = Assignment
     form_class = AssignmentForm
     template_name = "core/teacher/assignment_update_form.html"
+    context_object_name = 'assignment'
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        print(form)
+        return super().form_valid(form)

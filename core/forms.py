@@ -1,11 +1,11 @@
-from django.contrib.admin.widgets import AdminDateWidget
+from django.contrib.admin.widgets import AdminSplitDateTime
 from django import forms
 from .models import *
 
 
 class AssignmentForm(forms.ModelForm):
-    from_date = forms.DateTimeField(widget=AdminDateWidget())
-    to_date = forms.DateTimeField()
+    from_date = forms.SplitDateTimeField(widget=AdminSplitDateTime())
+    to_date = forms.SplitDateTimeField(widget=AdminSplitDateTime())
 
     class Meta:
         model = Assignment

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %} Group list {% endblock title %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'index' %}">{% translate 'Home' %}</a>
+    &rsaquo;
+    <a href="{% url 'group_list' %}">{% translate 'Group List' %}</a>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<h1>Group List</h1>
+<div class="results">
+    <table id="result_list">
+        <thead>
+        <tr>
+            <th scope="col" class="column-__str__">
+                <div class="text"><span>Id</span></div>
+                <div class="clear"></div>
+            </th>
+            <th scope="col" class="column-__str__">
+                <div class="text"><span>Name</span></div>
+                <div class="clear"></div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for group in group_list %}
+            <tr>
+                <td class="field-__str__"><a href="#">{{ group.id }}</a></td>
+                <td class="field-__str__"><a href="#">{{ group.name }}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
