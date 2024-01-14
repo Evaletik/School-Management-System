@@ -1,5 +1,4 @@
-from typing import Any
-from django.http import HttpRequest, HttpResponse
+from django.db.models import Q
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import View
 from core.models import Student
@@ -7,7 +6,6 @@ from schedule.models import Assignment
 from grades.models import *
 from django.views.generic import ListView
 from core.models import *
-from .models import Lesson
 from django.http import JsonResponse
 
 
@@ -27,7 +25,7 @@ class TeacherScheduleListView(View):
 
 
     def get_teachers_payload(self, name):
-        teachers = Teacher.objects.filter(firstName__contains=name)
+        teachers = Teacher.objects.filter(Q(firstName__contains=name) | Q(lastName__contains=name))
         payload = [{
             "id": teacher.id,
             "full_name": teacher.firstName + ' ' + teacher.lastName,

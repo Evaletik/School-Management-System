@@ -13,7 +13,7 @@
         <div class="col-md-8 mb-2" id="autoComplete">
             <div class="form-group">
                 <div class="input-group">
-                    <input type="search" class="form-control form-control-lg autocomplete-input" placeholder="Type your keywords here">
+                    <input type="search" class="form-control form-control-lg autocomplete-input" placeholder="Type your keywords here" {% if teacher %} value="{{teacher}}" {% endif  %}>
                     <div class="input-group-append">
                         <button type="submit" class="btn btn-lg btn-default">
                             <i class="fa fa-search"></i>
