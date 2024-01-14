@@ -1,7 +1,5 @@
 from import_export import resources
-from core.models import Assignment
-from import_export.fields import Field
-from import_export.widgets import DateWidget
+from .models import Assignment
 
 
 class AssignmentResource(resources.ModelResource):

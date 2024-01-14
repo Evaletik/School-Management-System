@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Title {% endblock title %}
+
+{% block additional_head %}
+<script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+{% endblock additional_head %}
+
+{% block content %}
+<h2 class="text-center display-4">Search</h2>
+<div class="row">
+    <div class="col-md-8 offset-md-2" id="autoComplete">
+        <form>
+            <div class="input-group">
+                <input type="search" class="form-control form-control-lg autocomplete-input" placeholder="Type your keywords here">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-lg btn-default">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <ul class="autocomplete-result-list list-group"></ul>
+    </div>
+</div>
+{% endblock content %}
+{% block page_specific_script %}
+<script type="text/javascript">
+    new Autocomplete('#autoComplete', {
+        search: input => {
+            const url = `{% url 'find_teacher_results' %}?q=${input}`
+            return new Promise(resolve => {
+                if(input.length < 3) return resolve([])
+                fetch(url)
+                    .then(res => {
+                        return res.json()
+                    }).then(data => {
+                        resolve(data.payload)
+                })
+            })
+        },
+        renderResult: (result, props) => {
+            const id = result.id
+            const url = "{% url 'teacher_schedule' pk=0 %}".replace("0", id)
+            return `
+                <div class="list-group-item" ${props}>
+                    <div class="row">
+                        <div class="col px-4">
+                            <a href=${url}>
+                                <h3>${result.full_name}</h3>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `
+        },
+        getResultValue: result => result.teacher.full_name,
+    })
+</script>
+
+{% endblock page_specific_script %}
