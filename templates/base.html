@@ -1,3 +1,19 @@
+<<<<<<< Updated upstream
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+<div id="container">
+
+    {% block header %}
+    <header id="header">
+        <div id="branding">
+            {% block branding %}
+            <div id="site-name"><a href="{% url 'index' %}">School Management System</a></div>
+                {% if user.is_anonymous %}
+                    {% include "admin/color_theme_toggle.html" %}
+                {% endif %}
+            {% endblock branding %}
+=======
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -5,29 +21,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %} {% endblock title %}</title>
-
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- Ionicons -->
-  {% comment %} <link rel="stylesheet" href="{% static 'https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css' %}"> {% endcomment %}
-  <!-- Tempusdominus Bootstrap 4 -->
-  {% comment %} <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}"> {% endcomment %}
-  <!-- iCheck -->
-  {% comment %} <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}"> {% endcomment %}
-  <!-- JQVMap -->
-  {% comment %} <link rel="stylesheet" href="{% static 'plugins/jqvmap/jqvmap.min.css' %}"> {% endcomment %}
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
-  <!-- overlayScrollbars -->
-  {% comment %} <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
-  <!-- summernote -->
-  <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.min.css' %}"> {% endcomment %}
   {% block additional_head %}
   {% endblock additional_head %}
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -43,7 +43,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                     <h1 class="m-0">Dashboard</h1>
-                    </div><!-- /.col -->
+                    </div>
                     <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         {% block breadcrumbs %}
@@ -51,32 +51,47 @@
                             <li class="breadcrumb-item active">Dashboard v1</li>
                         {% endblock breadcrumbs %}
                     </ol>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
+                    </div>
+                </div>
+                </div>
             </div>
-            <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
                     {% block content %}
                     {% endblock content %}
                 </div>
             </section>
+>>>>>>> Stashed changes
         </div>
+        <div id="user-tools">
+            {% include "admin/color_theme_toggle.html" %}
+        </div>
+    </header>
+    {% endblock header %}
+
+    {% block nav-breadcrumbs %}
+    <nav aria-label="{% translate 'Breadcrumbs' %}">
+        {% block breadcrumbs %}
+            <div class="breadcrumbs">
+                <a href="{% url 'index' %}">{% translate 'Home' %}</a>
+                {% if title %} &rsaquo; {{ title }}{% endif %}
+            </div>
+        {% endblock breadcrumbs %}
+    </nav>
+    {% endblock nav-breadcrumbs %}
+
+    <div class="main" id="main">
+        <main id="content-start" class="content" tabindex="-1">
+            {% block sidebar %}
+                {% include "parts/sidebar.html" %}
+            {% endblock %}
+            <div id="content" class="{% block coltype %}colM{% endblock %}">
+                {% block content %}
+                    dsasadasdsa
+                {% endblock content %}
+                <br class="clear">
+            </div>
+        </main>
     </div>
-    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-    <!-- Bootstrap 4 -->
-    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-    {% block additional_scripts %}
-    {% endblock additional_scripts %}
-
-    <!-- AdminLTE App -->
-    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="{% static 'dist/js/demo.js' %}"></script>
-
-    {% block page_specific_script %}
-    {% endblock page_specific_script %}
-</body>
-</html>
+</div>

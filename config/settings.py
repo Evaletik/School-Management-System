@@ -42,9 +42,6 @@ INSTALLED_APPS = [
     'import_export',
 
     'core.apps.CoreConfig',
-    'authentication.apps.AuthenticationConfig',
-    'schedule.apps.ScheduleConfig',
-    'grades.apps.GradesConfig'
 ]
 
 MIDDLEWARE = [
@@ -53,15 +50,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    
-
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-
-    # Auth required for each request
-    'config.middleware.AuthRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

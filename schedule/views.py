@@ -1,3 +1,5 @@
+from typing import Any
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import View
 from core.models import Student
@@ -5,6 +7,8 @@ from schedule.models import Assignment
 from grades.models import *
 from django.views.generic import ListView
 from core.models import *
+from .models import Lesson
+from django.http import JsonResponse
 
 
 class MySchedule(ListView):
@@ -18,14 +22,33 @@ class MySchedule(ListView):
         return context
 
 
-class TeacherScheduleListView(ListView):
-    model = Assignment
-    template_name = "core/teacher/schedule.html"
-    context_object_name = 'assignments'
+class TeacherScheduleListView(View):
+    template_name = "schedules/teacher_schedule.html"
 
-    def get_queryset(self):
-        teacher = Teacher.objects.values('id').get(id=self.kwargs['pk'])
-        return Assignment.objects.filter(lesson__teacher=teacher['id'])
+
+    def get_teachers_payload(self, name):
+        teachers = Teacher.objects.filter(firstName__contains=name)
+        payload = [{
+            "id": teacher.id,
+            "full_name": teacher.firstName + ' ' + teacher.lastName,
+        } for teacher in teachers]
+        return JsonResponse({'payload': payload})
+    
+    
+    def get(self, request, *args, **kwargs):
+        name = request.GET.get('name')
+        teacher_id = request.GET.get('teacher_id')
+        if name:
+            return self.get_teachers_payload(name)
+        elif teacher_id:
+            teacher = Teacher.objects.filter(id=teacher_id).first()
+            context = {
+                'teacher': teacher,
+                'assignments': Assignment.objects.filter(lesson__teacher=teacher)
+            }
+            return render(request, self.template_name, context)
+        else:
+            return render(request, self.template_name)
 
 
 class GroupScheduleListView(ListView):
@@ -38,14 +61,44 @@ class GroupScheduleListView(ListView):
         return Assignment.objects.filter(lesson__group=group['id'])
     
 
-class SubjectScheduleListView(ListView):
-    model = Subject
+class SubjectScheduleListView(View):
     template_name = "schedules/subject_schedule.html"
-    context_object_name = 'assignments'
 
-    def get_queryset(self):
-        return Assignment.objects.filter(lesson__subject_id=self.kwargs['pk'])
+    def get_subjects_payload(self, name):
+        subjects = Subject.objects.filter(name__contains=name)
+        payload = [{
+            "id": subject.id,
+            "name": subject.name,
+        } for subject in subjects]
+        return JsonResponse({'payload': payload})
+    
+    def get_assignments_context(self, subject, teacher_id=None):
+        teachers = Teacher.objects.filter(subjects=subject)
+        if teacher_id:
+            teacher = teachers.filter(id=teacher_id).first()
+        else:
+            teacher = teachers.first()
 
+        assignments = Assignment.objects.filter(lesson__teacher=teacher, lesson__subject=subject)
+        return {
+            'subject': subject,
+            'teachers': teachers,
+            'assignments': assignments
+        }
+
+    def get(self, request, *args, **kwargs):
+        name = request.GET.get('name')
+        subject_id = request.GET.get('subject_id')
+        teacher_id = request.GET.get('teacher_id')
+
+        if name:
+            return self.get_subjects_payload(name)
+        elif subject_id:
+            subject = Subject.objects.filter(id=subject_id).first()
+            context = self.get_assignments_context(subject, teacher_id)
+            return render(request, self.template_name, context)
+        else:
+            return render(request, self.template_name)
 
 class SetAttendance(View):
     # model = Attendance
