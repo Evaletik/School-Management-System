@@ -10,32 +10,18 @@
 {% block content %}
 <form method="GET">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-8 mb-2" id="autoComplete">
             <div class="form-group">
-                <div class="input-group input-group-lg" id="autoComplete">
-                    <input type="search" class="search form-control form-control-lg" placeholder="Type your keywords here">
+                <div class="input-group">
+                    <input type="search" class="form-control form-control-lg autocomplete-input" placeholder="Type your keywords here">
                     <div class="input-group-append">
                         <button type="submit" class="btn btn-lg btn-default">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
-                    <ul class="autocomplete-result-list list-group"></ul>
                 </div>
             </div>
-            {% if assignments|length >= 0 and assignments is not None %}
-            <div class="col-3" data-select2-id="1">
-                <div class="form-group">
-                    <label>Teacher:</label>
-                    <select class="select2" style="width: 100%;">
-                        {% if teachers %}
-                         {% for teacher in teachers %}
-                            <option {% if teacher.id == request.GET.teacher_id|add:"0" %} selected {% endif %} value="{{teacher.id}}">{{teacher}}</option> 
-                         {% endfor %}
-                        {% endif %}
-                    </select>
-                </div>
-            </div>
-            {% endif %}
+            <ul class="autocomplete-result-list list-group"></ul>
         </div>
     </div>
 </form>
@@ -49,30 +35,27 @@
         <thead>
         <tr>
             <th scope="col">Date</th>
-            <th scope="col">Day of week</th>
-            <th scope="col">Starts</th>
-            <th scope="col">Ends</th>
-            <th scope="col">Group</th>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Subject</th>
         </tr>
         </thead>
         <tbody>
             {% for assignment in assignments %}
             <tr>
-                <td>{{ assignment.from_date|date:'d.m.Y' }}</th>
-                <td>{{ assignment.from_date|date:"l" }}</th>
+                <th>{{ assignment.from_date|date:'d.m.Y' }}</th>
                 <td>{{ assignment.from_date|date:'H:i' }}</td>
                 <td>{{ assignment.to_date|date:'H:i' }}</td>
-                <td>{{ assignment.lesson.group }}</td>
+                <td>{{ assignment.lesson.subject.name }}</td>
             </tr>
             {% endfor %}
         </tbody>
         <tfoot>
             <tr>
                 <th scope="col">Date</th>
-                <th scope="col">Day of week</th>
-                <th scope="col">Starts</th>
-                <th scope="col">Ends</th>
-                <th scope="col">Group</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Subject</th>
               </tr>
         </tfoot>
       </table>
@@ -99,21 +82,9 @@
 
 {% block page_specific_script %}
     <script>
-        {% if subject %}
-        $('.search').val('{{subject.name}}')
-        {% endif %}
-        
-        {% if assignments|length >= 0 and assignments is not None%}
-        $(function () {
-          $('.select2').on('select2:select', e => {
-            window.location.href = `{% url 'subject_schedule'%}?subject_id={{subject.id}}&teacher_id=${e.params.data.id}`
-          }).select2({ width: '100%' })
-        });
-        {% endif %}
-  
         new Autocomplete('#autoComplete', {
             search: input => {
-                const url = `{% url 'subject_schedule' %}?name=${input}`
+                const url = `{% url 'teacher_schedule' %}?name=${input}`
                 return new Promise(resolve => {
                     if(input.length < 3) return resolve([])
                     fetch(url)
@@ -125,13 +96,14 @@
                 })
             },
             renderResult: (result, props) => {
-                const url = `{% url 'subject_schedule'%}?subject_id=${result.id}`
+                const id = result.id
+                const url = `{% url 'teacher_schedule'%}?teacher_id=${id}`
                 return `
                     <div class="list-group-item" ${props}>
                         <div class="row">
                             <div class="col px-4">
                                 <a href=${url}>
-                                    <h3>${result.name}</h3>
+                                    <h3>${result.full_name}</h3>
                                 </a>
                             </div>
                         </div>
@@ -153,5 +125,5 @@
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
           }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
-      </script>
+    </script>
 {% endblock page_specific_script %}

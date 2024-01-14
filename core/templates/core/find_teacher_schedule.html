@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Title {% endblock title %}
+{% block additional_header %}
+    <script src="{% static 'js/autocomplete.min.js' %}"></script>
+    <style>
+        .autocomplete {
+            position: relative;
+            width: 300px;
+        }
+
+        .autocomplete-input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .autocomplete-result-list {
+            position: relative !important;
+            top: 0 !important;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        /* Result item styling */
+        .autocomplete-result {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        /* Selected result styling */
+        .autocomplete-result[aria-selected="true"] {
+            background-color: #f0f0f0;
+
+        }
+    </style>
+
+{% endblock additional_header %}
+{% block content %}
+<div
+        id="autocomplete"
+        class="autocomplete"
+        data-expanded="true"
+        data-loading="false"
+        data-position="below"
+>
+    <input class="autocomplete-input" aria-expanded="true" />
+    <ul class="autocomplete-result-list"></ul>
+</div>
+    <script type="text/javascript">
+        new Autocomplete('#autocomplete', {
+            search: input => {
+                const url = `/find_teacher/search?q=${input}`
+                return new Promise(resolve => {
+                    if(input.length < 3) return resolve([])
+                    fetch(url)
+                        .then(res => {
+                            return res.json()
+                        }).then(data => {
+                            resolve(data.payload)
+                    })
+                })
+            },
+            renderResult: (result, props) => {
+                const id = result.id
+                const url = "{% url 'teacher_schedule' pk=0 %}".replace("0", id)
+                return `
+                    <li ${props}>
+                        <a href=${url}>
+                            ${result.full_name}
+                        </a>
+                    </li>
+                `
+            },
+            getResultValue: result => result.teacher.full_name,
+        })
+    </script>
+{% endblock content %}
